@@ -1,4 +1,5 @@
 import os
+import argparse
 from skimage import io, transform
 import torch
 import torchvision
@@ -53,14 +54,23 @@ def save_output(image_name,pred,d_dir):
 
 def main():
 
+    # --------- 0. input parameter ---------
+    # python u2net_test.py --model_name u2netp --model_dir saved_models/u2netp/u2netp.pth --image_dir test_data/test_images/ --prediction_dir test_data/u2netp_results/
+    parser = argparse.ArgumentParser(description="U2Net args")
+    parser.add_argument("--model_name", type=str, default="fpn", choices=["u2net", "u2netp"])
+    parser.add_argument("--model_dir", type=str)
+    parser.add_argument("--image_dir", type=str)
+    parser.add_argument("--prediction_dir", type=str)
+    args = parser.parse_args()
     # --------- 1. get image path and name ---------
-    model_name='u2net'#u2netp
-
-
-
-    image_dir = os.path.join(os.getcwd(), 'test_data', 'test_images')
-    prediction_dir = os.path.join(os.getcwd(), 'test_data', model_name + '_results' + os.sep)
-    model_dir = os.path.join(os.getcwd(), 'saved_models', model_name, model_name + '.pth')
+    # model_name='u2net'#u2netp
+    # image_dir = os.path.join(os.getcwd(), 'test_data', 'test_images')
+    # prediction_dir = os.path.join(os.getcwd(), 'test_data', model_name + '_results' + os.sep)
+    # model_dir = os.path.join(os.getcwd(), 'saved_models', model_name, model_name + '.pth')
+    model_name=args.model_name
+    image_dir = args.image_dir
+    prediction_dir = args.prediction_dir
+    model_dir = args.model_dir  
 
     img_name_list = glob.glob(image_dir + os.sep + '*')
     print(img_name_list)

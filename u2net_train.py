@@ -1,4 +1,5 @@
 import os
+import argparse
 import torch
 import torchvision
 from torch.autograd import Variable
@@ -44,13 +45,31 @@ def muti_bce_loss_fusion(d0, d1, d2, d3, d4, d5, d6, labels_v):
 	return loss0, loss
 
 
+# --------- 0. input parameter ---------
+# python u2net_train.py --model_name u2netp --model_dir saved_models/u2netp/u2netp.pth --image_dir train_data/ECSSD/images/ --label_dir train_data/ECSSD/ground_truth_mask/
+parser = argparse.ArgumentParser(description="U2Net args")
+parser.add_argument("--model_name", type=str, default="fpn", choices=["u2net", "u2netp"])
+parser.add_argument("--model_dir", type=str)
+parser.add_argument("--image_dir", type=str)
+parser.add_argument("--label_dir", type=str)
+args = parser.parse_args()
+
 # ------- 2. set the directory of training dataset --------
 
-model_name = 'u2net' #'u2netp'
+# model_name = 'u2net' #'u2netp'
 
-data_dir = os.path.join(os.getcwd(), 'train_data' + os.sep)
-tra_image_dir = os.path.join('DUTS', 'DUTS-TR', 'DUTS-TR', 'im_aug' + os.sep)
-tra_label_dir = os.path.join('DUTS', 'DUTS-TR', 'DUTS-TR', 'gt_aug' + os.sep)
+# data_dir = os.path.join(os.getcwd(), 'train_data' + os.sep)
+# # tra_image_dir = os.path.join('DUTS', 'DUTS-TR', 'DUTS-TR', 'im_aug' + os.sep)
+# # tra_label_dir = os.path.join('DUTS', 'DUTS-TR', 'DUTS-TR', 'gt_aug' + os.sep)
+# tra_image_dir = os.path.join('ECSSD', 'images' + os.sep)
+# tra_label_dir = os.path.join('ECSSD', 'ground_truth_mask' + os.sep)
+
+model_name = args.model_name
+# data_dir = args.data_dir
+# tra_image_dir = os.path.join('DUTS', 'DUTS-TR', 'DUTS-TR', 'im_aug' + os.sep)
+# tra_label_dir = os.path.join('DUTS', 'DUTS-TR', 'DUTS-TR', 'gt_aug' + os.sep)
+tra_image_dir = args.image_dir
+tra_label_dir = args.label_dir
 
 image_ext = '.jpg'
 label_ext = '.png'
@@ -63,7 +82,7 @@ batch_size_val = 1
 train_num = 0
 val_num = 0
 
-tra_img_name_list = glob.glob(data_dir + tra_image_dir + '*' + image_ext)
+tra_img_name_list = glob.glob(tra_image_dir + '*' + image_ext)
 
 tra_lbl_name_list = []
 for img_path in tra_img_name_list:
@@ -75,7 +94,7 @@ for img_path in tra_img_name_list:
 	for i in range(1,len(bbb)):
 		imidx = imidx + "." + bbb[i]
 
-	tra_lbl_name_list.append(data_dir + tra_label_dir + imidx + label_ext)
+	tra_lbl_name_list.append(tra_label_dir + imidx + label_ext)
 
 print("---")
 print("train images: ", len(tra_img_name_list))
