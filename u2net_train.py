@@ -46,12 +46,13 @@ def muti_bce_loss_fusion(d0, d1, d2, d3, d4, d5, d6, labels_v):
 
 
 # --------- 0. input parameter ---------
-# python u2net_train.py --model_name u2netp --model_dir saved_models/u2netp/u2netp.pth --image_dir train_data/ECSSD/images/ --label_dir train_data/ECSSD/ground_truth_mask/
+# python u2net_train.py --model_name u2netp --model_dir saved_models/u2netp/u2netp.pth --image_dir train_data/ECSSD/images/ --label_dir train_data/ECSSD/ground_truth_mask/ --output_dir output/
 parser = argparse.ArgumentParser(description="U2Net args")
-parser.add_argument("--model_name", type=str, default="fpn", choices=["u2net", "u2netp"])
+parser.add_argument("--model_name", type=str, default="u2net", choices=["u2net", "u2netp"])
 parser.add_argument("--model_dir", type=str)
 parser.add_argument("--image_dir", type=str)
 parser.add_argument("--label_dir", type=str)
+parser.add_argument("--output_dir", type=str)
 args = parser.parse_args()
 
 # ------- 2. set the directory of training dataset --------
@@ -75,6 +76,7 @@ image_ext = '.jpg'
 label_ext = '.png'
 
 model_dir = os.path.join(os.getcwd(), 'saved_models', model_name + os.sep)
+output_dir = args.output_dir
 
 epoch_num = 100000
 batch_size_train = 12
@@ -175,7 +177,7 @@ for epoch in range(0, epoch_num):
 
         if ite_num % save_frq == 0:
 
-            torch.save(net.state_dict(), model_dir + model_name+"_bce_itr_%d_train_%3f_tar_%3f.pth" % (ite_num, running_loss / ite_num4val, running_tar_loss / ite_num4val))
+            torch.save(net.state_dict(), output_dir + model_name+"_bce_itr_%d_train_%3f_tar_%3f.pth" % (ite_num, running_loss / ite_num4val, running_tar_loss / ite_num4val))
             running_loss = 0.0
             running_tar_loss = 0.0
             net.train()  # resume train
